@@ -1,3 +1,6 @@
+Here is the full README content for you to copy into your GitHub repository:
+
+---
 
 # BankerBot Chatbot Project
 
@@ -7,10 +10,10 @@ This project creates a chatbot named **BankerBot** using Amazon Lex. BankerBot h
 
 The project consists of five main parts:
 
-1. **Set Up a New Lex Chatbot** – Create the basic structure and initial intents for BankerBot.
+1. **Set Up a New Lex Chatbot** – Create the basic structure and initial intents for BankerBot, including connecting it with AWS Lambda.
 2. **Create the TransferFunds Intent** – Add an intent to handle funds transfers.
 3. **Explore Cool Features in Amazon Lex** – Use Amazon Lex’s conversation flow and visual builder.
-4. **Deploy with AWS CloudFormation** – Automate bot deployment with a CloudFormation template.
+4. **Deploy with AWS CloudFormation** – Automate bot deployment with a CloudFormation template and Lambda function code.
 5. **Clean Up Resources** – Delete resources to avoid charges.
 
 ## Prerequisites
@@ -88,19 +91,32 @@ The project consists of five main parts:
   - `Savings`
   - `Credit` (with synonyms: `credit card`, `visa`, `mastercard`, `amex`, `american express`)
 
-#### 5. Create `CheckBalance` Intent
-- **Intent name**: `CheckBalance`
-- **Description**: `Intent to check the balance in the specified account type.`
-- **Sample utterances**:
-  ```plaintext
-  What’s the balance in my account?
-  Check my account balance
-  What’s the balance in my {accountType} account?
-  ```
-- **Slots**:
-  - `accountType` – Prompt: `For which account would you like your balance?`
-  - `dateOfBirth` – Prompt: `For verification purposes, what is your date of birth?`
-- **Save intent**, **Build**, and **Test**.
+#### 5. Create `CheckBalance` Intent and Attach Lambda Function
+- **Create a Lambda Function** for balance retrieval:
+  - Go to **AWS Lambda** in the AWS console.
+  - Choose **Create function** > **Author from scratch**.
+  - **Function name**: `BankingBotCheckBalance`
+  - **Runtime**: Python 3.12
+  - **Paste code** for retrieving random balance data in `lambda_function.py`.
+  - Click **Deploy**.
+- **Attach Lambda to CheckBalance Intent**:
+  - Return to **Lex console** and open `BankerBot`.
+  - In **Intents**, choose **Add intent** > **Add empty intent**.
+  - **Intent name**: `CheckBalance`
+  - **Description**: `Intent to check the balance in the specified account type.`
+  - **Sample utterances**:
+    ```plaintext
+    What’s the balance in my account?
+    Check my account balance
+    What’s the balance in my {accountType} account?
+    ```
+  - **Slots**:
+    - `accountType` – Prompt: `For which account would you like your balance?`
+    - `dateOfBirth` – Prompt: `For verification purposes, what is your date of birth?`
+  - **Fulfillment**:
+    - Expand **On successful fulfillment**.
+    - Select **Lambda function** `BankingBotCheckBalance` for the fulfillment.
+  - **Save intent**, **Build**, and **Test**.
 
 ---
 
@@ -154,18 +170,22 @@ The project consists of five main parts:
 
 ### Part 4: Deploy with AWS CloudFormation
 
-#### 1. Deploy Using CloudFormation
-- **Download the Template**: Use `nextwork-banker-bot.yaml`.
+#### 1. Deploy Using CloudFormation and Lambda Function
+- **Download the Template**: Use `banker-bot.yaml`.
 - **Upload Template**:
   - Navigate to **CloudFormation** > **Create stack**.
   - **Upload** the template file.
-  - **Stack name**: `nextwork-banker-bot-yourname`
+  - **Stack name**: `banker-bot-yourname`
   - **Submit** and wait for **CREATE_COMPLETE** status.
-
+- **Upload Lambda Function Code**:
+  - In **AWS Lambda**, create a new function `BankingBotLambda` for chatbot fulfillment.
+  - Upload the `BankingBotEnglish.py` code.
+  - Attach this Lambda to the intents defined in CloudFormation.
+  
 #### 2. Test the Deployed Bot
 - In **Amazon Lex**, open the deployed bot and start testing.
 - **Troubleshooting**:
-  - If errors occur, create a new Lambda function, upload `BankingBotEnglish NextWork.py` code, and update the permissions.
+  - If errors occur, ensure Lambda permissions allow the Lex bot to call it.
 
 ---
 
@@ -183,3 +203,6 @@ The project consists of five main parts:
 ## Conclusion
 
 By following these steps, you’ll have successfully set up, deployed, and tested BankerBot. Remember to delete all resources upon completion to avoid AWS charges.
+
+---
+
