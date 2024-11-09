@@ -1,4 +1,4 @@
-Here is the full README content for you to copy into your GitHub repository:
+
 
 ---
 
